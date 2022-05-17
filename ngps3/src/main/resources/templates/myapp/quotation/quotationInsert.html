@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Quotation Insert</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- dataTable Control -->
+    <link href="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.js"></script>
+
+<head>
+<title>Quotation Insert</title>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+      //save
+     $('#saveReq').click(function () { 			
+
+            var parameter = $("form[name=form1]").serialize() ;  	       
+	        	$.ajax({
+	       	        url: "/cmd=saveRequest",  	
+ 	 				type: "POST",dataType:"json",data:parameter,
+     				success: function(result){alert("저장완료");},
+     				error: function (jqXHR, textStatus, errorThrown) {alert("오류가 발생하였습니다.");}                     
+ 		   	       });    		
+    	});
+    			  
+       //popSelectCom		  
+      $('#btnSelect').click( function () {
+          window.open('/cmd=popSelectCom','_blank',"toolbar=no,width=900,height=500, scrollorbars=no, resizable=no");    
+       }); 
+  });
+
+
+ function codeSelect(code){
+		$.ajax({
+ 		 url: "/cmd=ReqCodeSelect",data:{param:code},
+  		 dataType:"json", type: "POST", 
+   		 success: function(result){	
+ 		 //SELECT BOX 초기화           
+ 		 $("#ReqDCode").find("option").remove().end().append("<option value=''>전체</option>");  
+  		 //배열 개수 만큼 option 추가
+  		 $.each(result, function(i){
+  		   $("#ReqDCode").append("<option value='"+result[i]+"'>"+result[i]+"</option>")
+  		 });    
+  		 },
+ 		 error: function (jqXHR, textStatus, errorThrown) {
+  		 alert("오류가 발생하였습니다.");
+ 		 }                    
+ 		});
+ }
+</script>
+
+
+</head>
+<body>   
+ <div class="card shadow mb-4">
+  <form name="form1" id="form1" method="post">  </form>
+    <input type="hidden" id="ssnEnterCd"  name="ssnEnterCd" value="BACH"/>
+    <input type="hidden" id="ssnUserId"   name="ssnUserId" value="MASTER"/>
+   	<input type="hidden" id="ssnAuth"     name="ssnAuth" value="ALL"/>   
+   <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Request Insert</h6>
+   </div>
+  
+
+
+   <div align="right" style="padding:15px"> 
+        <button id="saveReq" class="btn btn-primary"  style ="font-size:13px">Save</button>
+        <button id="quotationReq" class="btn btn-danger"  style ="font-size:13px">Quotation Request</button>              
+      </div>    
+   <div class="card-body">  
+        <div class="table-responsive">  
+         <p class="text-x mb-0"> <i class="fas fa-clipboard-list fa-1x text-gray-400"></i>  Requisition Detail</p>        
+           <table class="table table-bordered" id="RequisitionTable" width="100%" cellspacing="0">    
+             <colgroup>
+		   	    <col width="20%" />
+			    <col width="30%" />
+			    <col width="15%" />
+			    <col width="35%" />
+		     </colgroup>   
+		    <tr>
+   			  <td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">요청번호</td>
+			  <td>	
+				<input id="ReqNo" name ="ReqNo" type="text"  style="font-size:13px" class="form-control"/>
+			  </td>
+			  <td style="text-align:center;font-weight: bold;vertical-align : middle;font-size:13px;background-color:#F5F9FA;">생성자</td>
+			  <td>	
+				<input id="ReqMade" name ="ReqMade" type="text"  style="font-size:13px" class="form-control"/>
+			  </td>
+   		     </tr>           
+            <tr>
+              <td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">종류</td>  
+  		      <td>
+   		     	<select id="ReqMCode" name="ReqMCode" style="font-size:13px" class="form-control" onchange="codeSelect(this.value);">
+       			<option value="">전체</option>                                                     
+       			<option value="Oil">윤활유</option>
+    			<option value="Material">자재</option>   
+    			</select>  
+              </td>
+              <td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">상세코드</td>  
+               <td>                          
+  		        <select id="ReqDCode" name="ReqDCode"  style="font-size:13px" class="form-control">
+    			<option value="">전체</option>
+   				</select>                                   
+   			   </td>
+   			</tr>
+   			<tr>
+   			  <td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">요청수량  </td>
+			  <td>	
+				<input id="ReqQty" name ="ReqQty" type="text"  style="font-size:13px" class="form-control"/>
+			  </td>
+			  <td style="text-align:center;font-weight: bold;font-size:13px;background-color:#F5F9FA;">단위  </td>
+			  <td>	
+				<input id="ReqUnit" name ="ReqUnit" type="text"  style="font-size:13px" class="form-control"/>
+			  </td>
+   		     </tr>    		        
+   			 <tr>
+   			  	<td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">견적요청기간  </td>
+				<td colspan=3  style="font-size:13px">	
+					<input id="ReqSymd" name ="ReqSymd" type="date"  /> ~
+					<input id="ReqEymd" name ="ReqEymd" type="date" />
+				</td>							
+   		     </tr>  	
+   		     <tr>
+   		       	<td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">비고 </td>
+   		       	<td  colspan=3>	
+					<input id="ReqBigo" name ="ReqBigo" type="text" class="form-control"/>
+				</td>
+   		     </tr>     
+   		   </table>   
+   		   <table>
+   		     <col width="30%" />
+			 <col width="51%" />
+			 <col width="20%" />
+   		     <tr>
+   		      <td>		      
+                <p class="text-x mb-0"><i class="fas fa-clipboard-list fa-1x text-gray-400"></i>  Quotation Company</p>
+              </td>  
+              <td></td>
+               <td>    
+                <button id="btnSelect" class="btn btn-outline-info"  style ="font-size:13px">Select Company</button> 
+                  </td>   
+              </tr>
+            </table>
+   		    <table class="table table-bordered" id="dataTable" data-toolbar="#toolbar" data-toggle="table" width="100%" cellspacing="0">
+                <thead>
+				<tr class="text-center" style="font-size:12px">		
+				  
+					 <th>회사코드</th>								
+					 <th>회사명</th>
+					 <th>주요품목</th>
+					 <th>거래건수</th>
+				</tr>
+				 </thead>
+				 <tbody class="text-center" style="font-size:12px">
+					<tr th:each="row:${QuoComList}">								
+					 <td th:text="${row.CC_CD}"></td>
+					 <td th:text="${row.CC_NM}"></td>
+					 <td th:text="${row.MAIN_ITEM}"></td>
+					 <td th:text="${row.DEALCNT}"></td>
+					</tr>
+				   </tbody>
+                </table>       
+   	     </div>   		
+    </div>
+ </div>   
+</body>
+
+    <!-- End of Page Wrapper -->
+
+
+
+</html>

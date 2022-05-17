@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ngps.spring.myapp.model.mapper.OpenApiMapper">
+ 
+ 
+   <select id="OilPriceList" parameterType="hashmap" resultType="hashmap">
+        SELECT YMD,
+               OILCODE,
+               OILNAME,
+               PRICE,
+               DIFF,
+               CHKDATE 
+         FROM npo.toilapi
+   </select>
+  
+   <insert id="InsertOilApi" parameterType="hashmap"> 
+        INSERT INTO npo.toilapi VALUES (#{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF},NOW(),"SYSTEM")
+   </insert>  
+  
+    <update id="UpdateOilApi" parameterType="hashmap"> 
+        UPDATE npo.toilapi 
+        SET #{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
+   </update>
+     
+     <delete id="DeleteOilApi" parameterType="hashmap"> 
+        INSERT INTO npo.toilapi VALUES (#{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
+   </delete>
+   
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ngps.spring.myapp.model.mapper.RequestMapper">
+ 
+    <select id="SelectRequest" resultType="hashmap">
+        SELECT   ENTER_CD
+			     ,REQ_NO
+				 ,REQ_SDATE
+				 ,REQ_EDATE
+				 ,REQ_TEXT
+				 ,BIGO
+				 ,CHKDATE
+				 ,CHKID
+               FROM npo.treq100
+                WHERE ENTER_CD =#{ssnEnterCd}
+               <!--  WHERE REQ_SDATE =#{YMD}-->
+    </select>
+
+    <select id="ReqCodeSelect" resultType="String">
+        SELECT CONCAT(ITEM_CD,'[',ITEM_NM,']') AS GOODS
+               FROM npo.TCODE100
+    </select>
+    
+    <select id="getReqInfo" resultType="hashmap">
+        SELECT   ENTER_CD
+			     ,REQ_NO 
+				 ,REQ_SDATE 
+				 ,REQ_EDATE
+				 ,REQ_TEXT
+				 ,BIGO				  	 				
+               FROM npo.TREQ100
+               WHERE REQ_NO = #{REQ_NO}
+    </select>
+    
+    <select id="getNewReqNo" resultType="hashmap">
+        SELECT  nextval(npo.req_seq) AS REQ_NO;
+    </select>
+    
+    <select id="ItemList" resultType="hashmap">
+        SELECT    ITEM_CD ,
+  		 	      ITEM_NM,  
+  			      MAIN_CATEGORY,
+  				  SUB_CATEGORY,
+  			      UNIT ,
+ 			 	  BIGO 				
+               FROM npo.TCODE100
+               WHERE ENTER_CD =#{ssnEnterCd}
+    </select>
+    
+     <select id="QuoComList" resultType="hashmap">
+          SELECT   ENTER_CD
+			      ,CC_NM 
+				  ,MAIN_ITEM 
+				  ,SUB_ITEM
+				  ,0 AS DEALCNT 	 				
+               FROM npo.TCOMP101
+    </select>
+    
+    <insert id="InsertRequest" parameterType="hashmap"> 
+        INSERT INTO npo.toilapi VALUES (#{ReqMCode}, #{ReqDCode},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF},NOW(),"SYSTEM")
+   </insert>  
+  
+    <update id="UpdateRequest" parameterType="hashmap"> 
+        UPDATE npo.toilapi 
+        SET #{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
+   </update>
+     
+     <delete id="DeleteRequest" parameterType="hashmap"> 
+        INSERT INTO npo.toilapi VALUES (#{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
+   </delete>
+   
+   <insert id="saveReqItem" parameterType="hashmap"> 
+      INSERT INTO npo.TREQ101
+      <foreach collection="i_arrStr" item="item" separator="OR">
+	       ENTER_CD = #{item.ENTER_CD} AND REQ_NO = #{item.REQ_NO} AND ITEM_CD = #{item.ITEM_CD}
+     </foreach> 
+   </insert>  
+
+ 
+</mapper>

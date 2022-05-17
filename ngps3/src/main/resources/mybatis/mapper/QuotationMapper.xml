@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ngps.spring.myapp.model.mapper.QuotationMapper">
+ 
+    <select id="SelectQuotation" resultType="hashmap">
+        SELECT   CC_CD
+			     ,REQ_NO
+				 ,REQ_SDATE
+				 ,REQ_EDATE
+				 ,REQ_TEXT
+				 ,BIGO
+				 ,CHKDATE
+				 ,CHKID
+               FROM npo.treq100
+               <!--  WHERE REQ_SDATE =#{YMD}-->
+    </select>
+
+    
+    <select id="ReqInfo" resultType="hashmap">
+        SELECT   '1' AS CC_CD
+			     ,'1' AS REQ_NO 
+				 ,'1' AS REQ_SDATE 
+				 ,'1' AS REQ_EDATE
+				 ,'1' AS REQ_TEXT
+				 ,'1' AS BIGO				  	 				
+               FROM npo.TREQ100
+               WHERE REQ_NO = #{REQ_NO}
+    </select>
+    
+    <select id="CompanyList" resultType="hashmap">
+        SELECT   '1' AS CHK
+                  ,CC_CD
+			     ,CC_NM 
+				 ,MAIN_ITEM 
+				 ,SUB_ITEM
+				 ,0 AS DEALCNT 	 				
+               FROM npo.TCOMP101
+    </select>
+    
+     <select id="QuoComList" resultType="hashmap">
+        SELECT   CC_CD
+			     ,CC_NM 
+				 ,MAIN_ITEM 
+				 ,SUB_ITEM
+				 ,0 AS DEALCNT 	 				
+               FROM npo.TCOMP101
+    </select>
+    
+    <insert id="InsertRequest" parameterType="hashmap"> 
+        INSERT INTO npo.toilapi VALUES (#{ReqMCode}, #{ReqDCode},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF},NOW(),"SYSTEM")
+   </insert>  
+  
+    <update id="UpdateRequest" parameterType="hashmap"> 
+        UPDATE npo.toilapi 
+        SET #{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
+   </update>
+     
+     <delete id="DeleteRequest" parameterType="hashmap"> 
+        INSERT INTO npo.toilapi VALUES (#{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
+   </delete>
+   
+   <insert id="saveReqCompany" parameterType="hashmap"> 
+      INSERT INTO 
+      SELECT CC_CD, CC_NM FROM npo.TCOMP101
+      WHERE CC_CD =  #{CC_CD}
+      
+      
+   </insert>  
+
+ 
+</mapper>

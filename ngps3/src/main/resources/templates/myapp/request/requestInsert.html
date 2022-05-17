@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Request Insert</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- dataTable Control -->
+    <link href="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.js"></script>
+
+<head>
+<title>Request Insert</title>
+
+<script type="text/javascript">
+
+  $(function() {
+	//화면 뜨자나마자 처리하는 부분 	  
+    });
+    
+  $(document).ready(function() {
+	  
+      //save
+     $('#saveReq').click(function () { 			
+
+            var parameter = form1.serialize() ;  	       
+	        	$.ajax({
+	       	        url: "/cmd=saveRequest",  	
+ 	 				type: "POST",dataType:"json",data:parameter,
+     				success: function(result){alert("저장완료");},
+     				error: function (jqXHR, textStatus, errorThrown) {alert("오류가 발생하였습니다.");}                     
+ 		   	       });    		
+    	});
+    	  
+      $('#btnSelectItem').click( function () {
+    	  
+    	  alert(document.getElementById("REQ_NO").value);
+ 
+     	  window.open('','popSelectItem','toolbar=no,width=800,height=600,left=100,top=100, scrollorbars=no, resizable=no'); 	
+     	  form1.action = "/cmd=popSelectItem"; 
+     	  form1.target = 'popSelectItem';
+     	  form1.submit();	 
+      }); 
+  }); 
+
+
+ function categorySelect(code){
+		$.ajax({
+	 		 url: "/cmd=SubSelect",data:{param:code},
+	  		 dataType:"json", type: "POST", 
+	   		 success: function(result){	
+	 		 //SELECT BOX 초기화           
+	 		 $("#SubCategory").find("option").remove().end().append("<option value=''>전체</option>");  
+	  		 //배열 개수 만큼 option 추가
+	  		 $.each(result, function(i){
+	  		   $("#SubCategory").append("<option value='"+result[i]+"'>"+result[i]+"</option>")
+	  		 });    
+	  		 },
+	 		 error: function (jqXHR, textStatus, errorThrown) {
+	  		 alert("오류가 발생하였습니다.");
+	 		 }                    
+	 		});
+ }
+</script>
+
+
+</head>
+<body>   
+ <div class="card shadow mb-4">
+  <form name="form1" id="form1" method="post">  
+    <input type="hidden" id="ssnEnterCd"  name="ssnEnterCd" value="BACH"/>
+    <input type="hidden" id="ssnUserId"   name="ssnUserId" value="MASTER"/>
+    <input type="hidden" id="ssnAuth"     name="ssnAuth" value="ALL"/> 
+   <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Request Insert</h6>
+   </div>
+  
+
+   <div align="right" style="padding:15px"> 
+        <button id="saveReq" class="btn btn-primary"  style ="font-size:13px">Make Req.No</button>
+        <button id="quotationReq" class="btn btn-danger"  style ="font-size:13px">Quotation Request</button>              
+      </div>    
+   <div class="card-body">  
+        <div class="table-responsive">  
+         <p class="text-x mb-0"> <i class="fas fa-clipboard-list fa-1x text-gray-400"></i>  Requisition Detail</p>        
+           <table class="table table-bordered" id="RequisitionTable" width="100%" cellspacing="0">    
+             <colgroup>
+		   	    <col width="20%" />
+			    <col width="30%" />
+			    <col width="15%" />
+			    <col width="35%" />
+		     </colgroup>   
+		    <tr>
+   			  <td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">요청번호</td>
+			  <td>	
+				<input id="REQ_NO" name ="REQ_NO" type="text"  style="font-size:13px" class="form-control" 
+				  th:value="${ReqInfo.REQ_NO} " readonly />
+			  </td>
+			  <td style="text-align:center;font-weight: bold;vertical-align : middle;font-size:13px;background-color:#F5F9FA;">생성자</td>
+			  <td>	
+				<input id="ReqMade" name ="ReqMade" type="text"  style="font-size:13px" class="form-control"/>
+			  </td>
+   		     </tr>           
+            <tr>
+              <td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">대분류</td>  
+  		      <td>
+   		     	<select id="MainCategory" name="MainCategory" style="font-size:13px" class="form-control" onchange="categorySelect(this.value);">
+       			   <option value="">선택</option>    
+       			   <option value="Office">사무용품</option>                                                     
+       			   <option value="Oil">Oil</option>    		
+    			   <option value="Mechanic">기계/부품</option>
+    		       <option value="service">용역</option>      
+    			</select>  
+              </td>
+              <td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">중분류</td>  
+               <td>                          
+  		        <select id="SubCategory" name="SubCategory"  style="font-size:13px" class="form-control">
+    			<option value="">선택</option>
+   				</select>                                   
+   			   </td>
+   			</tr>   		   		        
+   			 <tr>
+   			  	<td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">요청기간  </td>
+				<td colspan=3  style="font-size:13px">	
+					<input id="ReqSymd" name ="ReqSymd" type="date"  /> ~
+					<input id="ReqEymd" name ="ReqEymd" type="date" />
+				</td>							
+   		     </tr>  	
+   		     <tr>
+   		       	<td style="text-align:center;vertical-align : middle;font-weight: bold;font-size:13px;background-color:#F5F9FA;">비고 </td>
+   		       	<td  colspan=3>	
+					<input id="ReqBigo" name ="ReqBigo" type="text" class="form-control"
+					th:value="${Message =='NEW'} ? ' '  : ${ReqInfo.BIGO} " />
+				</td>
+   		     </tr>     
+   		   </table>  
+   		    <table>
+   		     <col width="85%" />
+			 <col width="0%" />
+			 <col width="15%" />
+   		     <tr>
+   		      <td>		      
+                <p class="text-x mb-0"><i class="fas fa-clipboard-list fa-1x text-gray-400"></i> Requisition Item</p>
+              </td>  
+              <td>  </td>
+               <td>    
+                <button id="btnSelectItem" class="btn btn-outline-info"  style ="font-size:13px">Select Item</button> 
+               </td>   
+              </tr>
+            </table>
+   		    <table class="table table-bordered" id="dataTable" data-toolbar="#toolbar" data-toggle="table" width="100%" cellspacing="0">
+                <thead>
+				<tr class="text-center" style="font-size:12px">						  
+					 <th>코드</th>								
+					 <th>코드명</th>
+					 <th>대분류</th>
+					 <th>중뷴류</th>
+					 <th>요청단위</th>
+					 <th>요청수량</th>			 
+				</tr>
+				 </thead>
+				 <tbody class="text-center" style="font-size:12px">
+					<tr th:each="row:${ReqItemList}">								
+					 <td th:text="${row._CD}"></td>
+					 <td th:text="${row.GOODS_NM}"></td>
+					 <td th:text="${row.MAIN_CATEGORY}"></td>
+					 <td th:text="${row.SUB_CATEGORY}"></td>
+					 <td><input type ="text" id ="CNT" name ="cnt"/></td>					 
+					 <td><a href="/person" th:href="@{'person/delete/' + ${person.id}}">Del</a></td>
+					 
+					</tr>
+				   </tbody>
+                </table>   
+   		       
+   	     </div>   		
+    </div>
+     </form>
+ </div>   
+
+</body>
+
+    <!-- End of Page Wrapper -->
+
+
+
+</html>

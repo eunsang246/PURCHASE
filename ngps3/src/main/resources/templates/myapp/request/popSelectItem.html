@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+
+<head>
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title></title>
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this page -->
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- dataTable Control -->
+    <link href="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.js"></script>
+    
+<script type="text/javascript">
+  
+$(function() {
+	//alert(document.getElementById("REQ_NO").value);
+    });
+    
+  
+$(document).ready(function() {
+    var table = $('#dataTable').DataTable();
+ 
+    $('#dataTable tbody').on( 'click', 'tr', function () {
+        $(this).toggleClass('selected');    
+    } ); 
+ 
+    $('#btnSave').click( function () {
+       var length = table.rows('.selected').data().length;  
+       
+       if(length ==0){
+         alert("항목을 선택하십시오.")
+         return;
+       }           
+         
+      var ItemObject = new Object();
+      var ItemArray = new Array();
+            
+      for (var i = 0; i < table.rows('.selected').data().length; i++) {     
+    	  ItemObject = {}; //array를 그냥 Push하면 마지막 값이 앞의 값을 다 덮어쓰기 떄문에 For문 돌때마다 초기화 해준다. 
+    	  ItemObject.ITEM_CD = table.rows('.selected').data()[i][0];
+    	  ItemObject.REQ_NO = document.getElementById("REQ_NO").value;
+    	  ItemObject.ENTER_CD = document.getElementById("ssnEnterCd").value;
+    	  ItemArray.push(ItemObject);    
+       }                     
+        
+         var parameter = JSON.stringify(ItemArray);
+
+         $.ajax({
+	       	        url: "/cmd=saveReqItem",  	
+ 	 				type: "POST",dataType:"json",
+ 	 				data:  {'jsonData':parameter},
+     				success: function(text){alert("저장완료");},
+     				error: function (jqXHR, textStatus, errorThrown) {alert(errorThrown);}                     
+ 		   	       });
+       
+       
+       
+       //var selectRow = table.rows('.selected').data().toArray();
+      
+    } );  
+});
+
+
+ 								
+</script>
+
+	
+
+</head>
+
+<body id="page-top">
+   
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+              <form name="form1" id="form1" method="post">
+               <input type="hidden" id="ssnEnterCd"  name="ssnEnterCd" value="BACH"/>
+    		   <input type="hidden" id="ssnUserId"   name="ssnUserId" value="MASTER"/>
+   			   <input type="hidden" id="ssnAuth"     name="ssnAuth" value="ALL"/>
+   			   <input type="hidden" id="REQ_NO"     name="REQ_NO" th:value="${REQ_NO}" />
+            
+            <!-- Main Content -->
+            <div id="content">
+
+              <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800"></h1>
+                    
+                    
+                    <!-- DataTales Start -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Select Item</h6>
+                        </div>      
+                         <div align="right" style="padding:15px"> 
+        					<button id="btnSave" class="btn btn-primary"  style ="font-size:13px">저장</button>
+      				    </div>    
+                        <div class="card-body">                        
+                            <div class="table-responsive">    
+                                 <table class="table table-bordered" id="dataTable"   data-click-to-select="true"
+                                   data-toolbar="#toolbar" data-toggle="table"  width="100%" cellspacing="0">
+                                 <thead>
+									<tr class="text-center" style="font-size:12px">
+									  <th>Item Code</th>								
+									  <th>Item Name</th>
+									  <th>대분류</th>
+									  <th>중분류</th>	
+									  <th>수량단위</th>
+									  <th>비고</th>								
+									</tr>
+								</thead>
+								 <tbody class="text-center" style="font-size:12px">
+									  <tr th:each="row:${ItemList}">               						 
+									  <td th:name="item_cd" th:text="${row.ITEM_CD}" ></td>
+									  <td th:name="item_nm" th:text="${row.ITEM_NM}" ></td>
+									  <td th:name="main_category" th:text="${row.MAIN_CATEGORY}" ></td>
+									  <td th:name="sub_category" th:text="${row.SUB_CATEGORY}" ></td>
+									  <td th:name="unit" th:text="${row.UNIT}" ></td>
+									  <td th:name="bigo" th:text="${row.BIGO}" ></td>
+									 </tr>      
+								</tbody>
+                                </table>
+                        
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+		</form>
+         
+        </div>
+        <!-- End of Content Wrapper -->
+     
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>   
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/datatables-demo.js"></script>
+
+</body>
+
+</html>

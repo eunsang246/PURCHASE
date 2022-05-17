@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ngps.spring.myapp.model.mapper.UserMapper">
+ 
+    <select id="SelectAllList" resultType="hashmap">
+        SELECT   ENTER_CD, 
+                ID,
+                ROCKING_YN,
+                PSWD_CHG_YMD,
+                LOGIN_FAIL_CNT,
+                EXTRA_YN,
+                MAIN_TYPE,
+                CHKDATE
+               FROM npo.tuser101
+               WHERE ID = 'CES'
+    </select>
+    
+    
+    <select id="SelectAllList2" resultType="hashmap">
+        SELECT  ENTER_CD, 
+                ID,
+                ROCKING_YN,
+                PSWD_CHG_YMD,
+                LOGIN_FAIL_CNT,
+                EXTRA_YN,
+                MAIN_TYPE,
+                CHKDATE                
+               FROM npo.tuser101
+    </select>
+ 
+</mapper>
