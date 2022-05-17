@@ -1,2 +1,9 @@
 # PURCHASE
-SpringBoot/Thymeleaf/bootstrap/dataTables/MariaDB/Mybatis
+오픈소스기반 구매시스템 구축 프로젝트
+
+- 시스템 기반 : SpringBoot/Thymeleaf/bootstrap/dataTables/MariaDB/Mybatis
+- 기본프로세스 : 요청 -> 견적 -> 구매 -> 재고관리 , 협력사 관리 등 구매업무.
+- 특이사항  
+  1.  로그인 회사코드를 모든 데이터의 키값으로 지정하여 여러회사가 시스템을 사용할 수 있도록 구현
+  2.  업체견적 제출완료시 SHA256 함수를 이용해 총 견적금액 및 업체명에 대한 고유값을 추출하고 내용 공유하여 시스템 신뢰 확보
+            
