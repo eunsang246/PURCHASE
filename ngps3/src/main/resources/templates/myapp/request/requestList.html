@@ -34,25 +34,20 @@
 
     
     
-<script type="text/javascript">
-
- 
+<script type="text/javascript"> 
  $(document).ready(function(){
 	  
    var table = $('#dataTable').DataTable();
 	
-  $('#btnNewReq').click( function () {
+   $('#btnNewReq').click( function () {
 	  form1.reset();
       window.open('/cmd=viewReqInsert','pop',"toolbar=no,width=700,height=800, scrollorbars=no, resizable=no");    
    }); 
 	
  
-  $('#dataTable tbody').on( 'click', 'tr', function () {
+  $('#dataTable tbody').on( 'dblclick', 'tr', function () {
 	  
-	  $(this).toggleClass('selected');  	  
-	  //var length = table.rows('.selected').data().length;	  
-	 
- 	  document.getElementById("REQ_NO").value = table.rows('.selected').data()[0][1];
+ 	  document.getElementById("REQ_NO").value = table.row(this).data()[1];
 	   	 
  	  window.open('','popReqInsert','toolbar=no,width=700,height=800, scrollorbars=no, resizable=no'); 	
  	  form1.action = "/cmd=viewReqInsert"; 

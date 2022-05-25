@@ -41,44 +41,37 @@ $(document).ready(function() {
     $('#dataTable tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');    
     } ); 
- 
-    $('#btnSave').click( function () {
-       var length = table.rows('.selected').data().length;  
-       
-       if(length ==0){
-         alert("항목을 선택하십시오.")
-         return;
-       }           
-         
-      var ItemObject = new Object();
-      var ItemArray = new Array();
-            
-      for (var i = 0; i < table.rows('.selected').data().length; i++) {     
-    	  ItemObject = {}; //array를 그냥 Push하면 마지막 값이 앞의 값을 다 덮어쓰기 떄문에 For문 돌때마다 초기화 해준다. 
-    	  ItemObject.ITEM_CD = table.rows('.selected').data()[i][0];
-    	  ItemObject.REQ_NO = document.getElementById("REQ_NO").value;
-    	  ItemObject.ENTER_CD = document.getElementById("ssnEnterCd").value;
-    	  ItemArray.push(ItemObject);    
-       }                     
+    
+    
+    $('#btnChoice').click( function () {
+        var length = table.rows('.selected').data().length;  
         
-         var parameter = JSON.stringify(ItemArray);
-
-         $.ajax({
-	       	        url: "/cmd=saveReqItem",  	
- 	 				type: "POST",dataType:"json",
- 	 				data:  {'jsonData':parameter},
-     				success: function(text){alert("저장완료");},
-     				error: function (jqXHR, textStatus, errorThrown) {alert(errorThrown);}                     
- 		   	       });
+        if(length ==0){
+          alert("항목을 선택하십시오.")
+          return;
+        }           
+          
+       var ItemObject = new Object();
+       var ItemArray = new Array();
+             
+       for (var i = 0; i < table.rows('.selected').data().length; i++) {     
+     	  ItemObject = {}; //array를 그냥 Push하면 마지막 값이 앞의 값을 다 덮어쓰기 떄문에 For문 돌때마다 초기화 해준다. 
+     	  ItemObject.ITEM_CD = table.rows('.selected').data()[i][0];
+     	  ItemObject.ITEM_NM = table.rows('.selected').data()[i][1];
+     	  ItemObject.MAIN_CATEGORY = table.rows('.selected').data()[i][2];
+     	  ItemObject.SUB_CATEGORY = table.rows('.selected').data()[i][3];
+       	  ItemObject.UNIT = table.rows('.selected').data()[i][4];
+          ItemObject.BIGO = table.rows('.selected').data()[i][5];
+     	  ItemArray.push(ItemObject);    
+        }
        
+       window.opener.setItemList(ItemArray);
+       window.close();
+         
        
-       
-       //var selectRow = table.rows('.selected').data().toArray();
-      
-    } );  
+   
+     });    
 });
-
-
  								
 </script>
 
@@ -98,7 +91,7 @@ $(document).ready(function() {
                <input type="hidden" id="ssnEnterCd"  name="ssnEnterCd" value="BACH"/>
     		   <input type="hidden" id="ssnUserId"   name="ssnUserId" value="MASTER"/>
    			   <input type="hidden" id="ssnAuth"     name="ssnAuth" value="ALL"/>
-   			   <input type="hidden" id="REQ_NO"     name="REQ_NO" th:value="${REQ_NO}" />
+   			  <!--  <input type="hidden" id="REQ_NO"     name="REQ_NO" th:value="${REQ_NO}" /> -->
             
             <!-- Main Content -->
             <div id="content">
@@ -115,7 +108,7 @@ $(document).ready(function() {
                             <h6 class="m-0 font-weight-bold text-primary">Select Item</h6>
                         </div>      
                          <div align="right" style="padding:15px"> 
-        					<button id="btnSave" class="btn btn-primary"  style ="font-size:13px">저장</button>
+        					<button id="btnChoice" class="btn btn-primary"  style ="font-size:13px">선택</button>        				
       				    </div>    
                         <div class="card-body">                        
                             <div class="table-responsive">    

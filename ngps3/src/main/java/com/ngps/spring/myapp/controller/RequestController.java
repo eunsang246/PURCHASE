@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-//해시함수 인코딩을 위해 Import
-import com.ngps.spring.myapp.security.HashEncrypt;
+
 import com.ngps.spring.myapp.service.RequestService;
 
 import net.sf.json.*;
@@ -62,7 +61,8 @@ public class RequestController<paramMap> {
 	         System.out.println(paramMap);
   	         try{
 	    	  ReqInfo = requestService.getReqInfo(paramMap);   //REQ_NO로 기존 신청정보 가져오기. 
-	    	 //List<Map<String, Object>> ReqItemList = requestService.ItemList(REQ_NO); //REQ_NO 가져오기 
+	    	  List<Map<String, Object>> ReqItemList = requestService.getReqItemList(paramMap); //REQ_NO 가져오기 
+	    	  mav.addObject("ReqItemList", ReqItemList);
 	    	  mav.addObject("ReqInfo", ReqInfo);
 	     	   }catch(Exception e){
 	 	    	  System.out.println(e);
@@ -74,7 +74,7 @@ public class RequestController<paramMap> {
 			 System.out.println("New Req Insert");			
 		}
 		
-		mav.addObject("Message", Message);
+		mav.addObject("Message", Message);	
 	    mav.setViewName("myapp/request/requestInsert");        
 		return mav;
 	}
@@ -108,13 +108,10 @@ public class RequestController<paramMap> {
 			 HttpServletRequest req, HttpServletResponse res, 
 			@RequestParam Map<String, Object> paramMap) throws Exception{
 		
-		
 		ModelAndView mav = new ModelAndView();	
-		System.out.println(paramMap);			
-		System.out.println(paramMap.get("REQ_NO"));
-					
-		List<Map<String, Object>> ItemList = requestService.ItemList(paramMap); 
-		mav.addObject("REQ_NO",paramMap.get("REQ_NO") );
+
+		List<Map<String, Object>> ItemList = requestService.getItemList(paramMap); 
+		//mav.addObject("REQ_NO",paramMap.get("REQ_NO") );
 		mav.addObject("ItemList", ItemList);
         mav.setViewName("myapp/request/popSelectItem"); 
         
@@ -122,7 +119,7 @@ public class RequestController<paramMap> {
 	}
 	
 	
-	@RequestMapping(value="cmd=saveReqItem")
+	@RequestMapping(value="cmd=saveReq")
 	public void saveReqItem(HttpSession session, 
 			 HttpServletRequest req, HttpServletResponse res, 
 			 @RequestParam Map<String, Object> paramMap) { 
@@ -140,54 +137,19 @@ public class RequestController<paramMap> {
 			        JSONObject obj = (JSONObject)arr.get(i);
 			        Map<String, Object> resendMap = new HashMap<String, Object>();
 			        resendMap.put("ENTER_CD", obj.get("ENTER_CD"));
+			        resendMap.put("REQ_NO", obj.get("REQ_NO"));	
 			        resendMap.put("ITEM_CD", obj.get("ITEM_CD"));
-			        resendMap.put("REQ_NO", obj.get("REQ_NO"));			            
+			        resendMap.put("ITEM_NM", obj.get("ITEM_NM"));			        		            
 			        resendList.add(resendMap);
 			  }
 			    paramMap.put("i_arrStr", resendList);
-	          	requestService.saveReqItem(paramMap);
+	          	requestService.saveReq(paramMap);
 			    
 			    System.out.println("********************************************222222");
 		   } catch (Exception e) {
 		        System.out.println(e);
 		   }
 		}
-	
-	
-
-
-	@RequestMapping(value="cmd=saveRequest")
-	public void saveRequest(HttpSession session, 
-			 HttpServletRequest req, HttpServletResponse res, 
-			 @RequestParam Map<String, Object> paramMap) { 
-     try {			   
- 			System.out.println(session.getAttribute("ssnEnterCd"));			
- 			paramMap.put("ssnEnterCd", session.getAttribute("ssnEnterCd"));
- 			
-    	       
-    	       System.out.println("---------  saveRequest Start!  -----------");	
-			   System.out.println(paramMap);	    
-			  
-               int InsertReq = requestService.InsertRequest(paramMap);      
-	           System.out.println(InsertReq);		     
-		    	
-				/*---------------- 해시함수 Encoding Start ----------------*/
-				HashEncrypt hashEncrypt =  new HashEncrypt();
-				String EncryptResult = hashEncrypt.encrypt("20220413");	
-				
-				System.out.println(EncryptResult);	
-
-			    System.out.println(EncryptResult.equals(hashEncrypt.encrypt("20220413")));
-
-				/*---------------- 해시함수 Encoding End ----------------*/		
-		   } catch (Exception e) {
-		        System.out.println("Controller error");
-		   }
-     
-                System.out.println("---------  saveRequest End!  -----------");	
-		}
-	
-	
 	
 	
 	

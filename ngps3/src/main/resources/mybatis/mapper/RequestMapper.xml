@@ -39,7 +39,7 @@
         SELECT  nextval(npo.req_seq) AS REQ_NO;
     </select>
     
-    <select id="ItemList" resultType="hashmap">
+    <select id="getItemList" resultType="hashmap">
         SELECT    ITEM_CD ,
   		 	      ITEM_NM,  
   			      MAIN_CATEGORY,
@@ -48,6 +48,17 @@
  			 	  BIGO 				
                FROM npo.TCODE100
                WHERE ENTER_CD =#{ssnEnterCd}
+    </select>
+    
+       <select id="getReqItemList" resultType="hashmap">
+        SELECT    ENTER_CD,
+                  REQ_NO,
+                  ITEM_CD ,
+  		 	      ITEM_NM,  
+  			      BIGO 				
+               FROM npo.TREQ101
+               WHERE ENTER_CD =#{ssnEnterCd}
+               AND REQ_NO = #{REQ_NO}
     </select>
     
      <select id="QuoComList" resultType="hashmap">
@@ -59,8 +70,17 @@
                FROM npo.TCOMP101
     </select>
     
-    <insert id="InsertRequest" parameterType="hashmap"> 
-        INSERT INTO npo.toilapi VALUES (#{ReqMCode}, #{ReqDCode},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF},NOW(),"SYSTEM")
+   
+    <insert id="saveReq" parameterType="hashmap">  
+      INSERT INTO npo.TREQ101 (ENTER_CD ,REQ_NO,ITEM_CD,ITEM_NM,BIGO,CHKDATE,CHKID) VALUES 
+        ("1","2","3","4","5",now(),"6");
+    
+    
+       INSERT INTO npo.TREQ101 (ENTER_CD ,REQ_NO,ITEM_CD,ITEM_NM,BIGO,CHKDATE,CHKID) VALUES
+       <foreach collection="i_arrStr" item="item" separator = ",">       
+	      (#{item.ENTER_CD},#{item.REQ_NO}, #{item.ITEM_CD},#{item.ITEM_NM},"REQ ITEM",now(),"MASTER")
+       </foreach> 
+     
    </insert>  
   
     <update id="UpdateRequest" parameterType="hashmap"> 
@@ -72,12 +92,7 @@
         INSERT INTO npo.toilapi VALUES (#{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
    </delete>
    
-   <insert id="saveReqItem" parameterType="hashmap"> 
-      INSERT INTO npo.TREQ101
-      <foreach collection="i_arrStr" item="item" separator="OR">
-	       ENTER_CD = #{item.ENTER_CD} AND REQ_NO = #{item.REQ_NO} AND ITEM_CD = #{item.ITEM_CD}
-     </foreach> 
-   </insert>  
+
 
  
 </mapper>

@@ -16,11 +16,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RequestMapper {
 	
-    int InsertRequest(Map<?, ?> paramMap) throws Exception;
+    int saveReq(Map<?, ?> paramMap) throws Exception;
     
-    int UpdateRequest(Map<?, ?> paramMap) throws Exception;
+    int updateRequest(Map<?, ?> paramMap) throws Exception;
     
-    int DeleteRequest(Map<?, ?> paramMap) throws Exception;
+    int deleteRequest(Map<?, ?> paramMap) throws Exception;
 
     List<Map<String, Object>> SelectRequest(Map<?, ?> paramMap);
     
@@ -30,8 +30,10 @@ public interface RequestMapper {
     
     Map<String, Object> getNewReqNo(Map<?, ?> paramMap);
   
-    List<Map<String, Object>> ItemList(Map<?, ?> paramMap);
+    List<Map<String, Object>> getItemList(Map<?, ?> paramMap);
     
-    int saveReqItem(Map<?, ?> paramMap) throws Exception;
+    List<Map<String, Object>> getReqItemList(Map<?, ?> paramMap);
+    
+    
    
 }

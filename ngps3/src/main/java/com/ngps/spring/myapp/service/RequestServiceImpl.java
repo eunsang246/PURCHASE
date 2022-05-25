@@ -47,34 +47,37 @@ public class RequestServiceImpl implements RequestService{
 
 	
 	@Override
-	public int InsertRequest(Map<?, ?> paramMap) throws Exception {
+	public int saveReq(Map<?, ?> paramMap) throws Exception {
 		// TODO Auto-generated method stub
-		return requestMapper.InsertRequest(paramMap);
+		return requestMapper.saveReq(paramMap);
+	}
+	
+
+	@Override
+	public int updateRequest(Map<?, ?> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return requestMapper.updateRequest(paramMap);
 	}
 
 	@Override
-	public int UpdateRequest(Map<?, ?> paramMap) throws Exception {
+	public int deleteRequest(Map<?, ?> paramMap) throws Exception {
 		// TODO Auto-generated method stub
-		return requestMapper.UpdateRequest(paramMap);
+		return requestMapper.deleteRequest(paramMap);
 	}
 
 	@Override
-	public int DeleteRequest(Map<?, ?> paramMap) throws Exception {
+	public List<Map<String, Object>> getItemList(Map<?, ?> paramMap) throws Exception {
+	
 		// TODO Auto-generated method stub
-		return requestMapper.DeleteRequest(paramMap);
+		return requestMapper.getItemList(paramMap);
 	}
+	
+	@Override
+	public List<Map<String, Object>> getReqItemList(Map<?, ?> paramMap) throws Exception {
+	
+		// TODO Auto-generated method stub
+		return requestMapper.getReqItemList(paramMap);
+	}
+	
 
-	@Override
-	public List<Map<String, Object>> ItemList(Map<?, ?> paramMap) throws Exception {
-	
-		// TODO Auto-generated method stub
-		return requestMapper.ItemList(paramMap);
-	}
-	
-	@Override
-	public int saveReqItem(Map<?, ?> paramMap) throws Exception {
-		// TODO Auto-generated method stub
-		return requestMapper.saveReqItem(paramMap);
-	}
-	
 }

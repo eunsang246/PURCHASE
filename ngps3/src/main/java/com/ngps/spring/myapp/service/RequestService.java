@@ -7,12 +7,12 @@ import java.util.Map;
 
 public interface RequestService {
 	
-
-	public int InsertRequest(Map<?, ?> paramMap) throws Exception;
 	
-	public int UpdateRequest(Map<?, ?> paramMap) throws Exception;
+	public int saveReq(Map<?, ?> paramMap) throws Exception;
+	
+	public int updateRequest(Map<?, ?> paramMap) throws Exception;
 
-	public int DeleteRequest(Map<?, ?> paramMap) throws Exception;
+	public int deleteRequest(Map<?, ?> paramMap) throws Exception;
 	
 	public List<Map<String, Object>> SelectRequest(Map<?, ?> paramMap) throws Exception;
 		
@@ -22,8 +22,10 @@ public interface RequestService {
 	
 	public Map<String, Object> getNewReqNo(Map<?, ?> paramMap) throws Exception;
 	
-	public List<Map<String, Object>> ItemList(Map<?, ?> paramMap) throws Exception;	
+	public List<Map<String, Object>> getItemList(Map<?, ?> paramMap) throws Exception;
 	
-	public int saveReqItem(Map<?, ?> paramMap) throws Exception;
+	public List<Map<String, Object>> getReqItemList(Map<?, ?> paramMap) throws Exception;	
+	
+
 
 }
