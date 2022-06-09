@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ngps.spring.myapp.model.mapper.CompMapper">
+ 
+    <select id="SelectCompList" resultType="hashmap">
+        SELECT   ENTER_CD, 
+                CC_CD,
+                CC_NM,
+                BIZ_NO,
+                CEO_NM,
+                TEL_NO,
+                ADDRESS,
+                MAIN_ITEM,
+                SUB_ITEM
+               FROM npo.TCOMP101
+               
+    </select>
+   
+ 
+</mapper>

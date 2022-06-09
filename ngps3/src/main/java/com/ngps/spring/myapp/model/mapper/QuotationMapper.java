@@ -16,23 +16,24 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface QuotationMapper {
 	
-    int InsertRequest(Map<?, ?> paramMap) throws Exception;
+    int saveQuo(Map<?, ?> paramMap) throws Exception;
     
-    int UpdateRequest(Map<?, ?> paramMap) throws Exception;
+    int updateRequest(Map<?, ?> paramMap) throws Exception;
     
-    int DeleteRequest(Map<?, ?> paramMap) throws Exception;
-    
-    int saveReqCompany(Map<?, ?> paramMap) throws Exception;
+    int deleteRequest(Map<?, ?> paramMap) throws Exception;
 
     List<Map<String, Object>> SelectQuotation(Map<?, ?> paramMap);
     
-    List<Map<String, Object>> ReqCodeSelect(Map<?, ?> paramMap);
+    Map<String, Object> getQuoInfo(Map<?, ?> paramMap);
     
-    List<Map<String, Object>> ReqInfo(String REQ_NO);
+    Map<String, Object> getNewQuoNo(Map<?, ?> paramMap);
+  
+    List<Map<String, Object>> getReqItemList(Map<?, ?> paramMap);
     
-    List<Map<String, Object>> QuoComList(String REQ_NO);
-
-    List<Map<String, Object>> CompanyList(Map<?, ?> paramMap);
+    List<Map<String, Object>> getCompList(Map<?, ?> paramMap);
+    
+    List<Map<String, Object>> getQuoCompList(Map<?, ?> paramMap);
+    
     
    
 }

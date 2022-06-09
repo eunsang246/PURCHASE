@@ -6,69 +6,91 @@
 <mapper namespace="com.ngps.spring.myapp.model.mapper.QuotationMapper">
  
     <select id="SelectQuotation" resultType="hashmap">
-        SELECT   CC_CD
-			     ,REQ_NO
-				 ,REQ_SDATE
-				 ,REQ_EDATE
-				 ,REQ_TEXT
-				 ,BIGO
-				 ,CHKDATE
-				 ,CHKID
-               FROM npo.treq100
-               <!--  WHERE REQ_SDATE =#{YMD}-->
+         SELECT   A.ENTER_CD
+          		,NVL(B.QUO_NO,'Quotation Proceed') AS QUO_NO
+		 	 	,A.REQ_NO
+		  		,A.REQ_SDATE
+		  		,A.REQ_EDATE
+		  		,A.BIGO
+		  		,A.CHKDATE AS CHKDATE
+          		,A.CHKID AS CHKID
+         FROM npo.TREQ100 A
+            LEFT JOIN npo.TQUO100 B
+             ON A.REQ_NO =  B.REQ_NO   
+         WHERE A.ENTER_CD ='BACH'
+         <!--  WHERE REQ_SDATE =#{YMD}-->
     </select>
 
     
-    <select id="ReqInfo" resultType="hashmap">
-        SELECT   '1' AS CC_CD
-			     ,'1' AS REQ_NO 
-				 ,'1' AS REQ_SDATE 
-				 ,'1' AS REQ_EDATE
-				 ,'1' AS REQ_TEXT
-				 ,'1' AS BIGO				  	 				
+    <select id="getQuoInfo" resultType="hashmap">
+        SELECT   ENTER_CD
+			     ,REQ_NO 
+				 ,TO_CHAR(REQ_SDATE,'YYYY-MM-DD') AS REQ_SDATE 
+				 ,TO_CHAR(REQ_EDATE,'YYYY-MM-DD') AS REQ_EDATE 
+				 ,BIGO		
+				 ,CHKID		  	 				
                FROM npo.TREQ100
                WHERE REQ_NO = #{REQ_NO}
     </select>
     
-    <select id="CompanyList" resultType="hashmap">
-        SELECT   '1' AS CHK
-                  ,CC_CD
-			     ,CC_NM 
-				 ,MAIN_ITEM 
-				 ,SUB_ITEM
-				 ,0 AS DEALCNT 	 				
-               FROM npo.TCOMP101
+    <select id="getNewQuoNo" resultType="hashmap">
+        SELECT  nextval(npo.quo_seq) AS QUO_NO
+               ,A.REQ_NO
+               ,TO_CHAR(A.CHKDATE,'YYYY-MM-DD') AS REQ_CHKDATE
+        FROM npo.TREQ100 A
+        WHERE A.ENTER_CD ='BACH'
+        AND A.REQ_NO = #{REQ_NO}
     </select>
     
-     <select id="QuoComList" resultType="hashmap">
-        SELECT   CC_CD
-			     ,CC_NM 
-				 ,MAIN_ITEM 
-				 ,SUB_ITEM
-				 ,0 AS DEALCNT 	 				
+    <select id="getCompList" resultType="hashmap">
+         SELECT   ENTER_CD
+			      ,COMP_CD
+			      ,COMP_NM 
+				  ,MAIN_ITEM 
+				  ,SUB_ITEM
+				  ,'0' AS DEAL_CNT 	 				
                FROM npo.TCOMP101
+               WHERE 1=1
+                AND ENTER_CD =#{ssnEnterCd}
     </select>
     
-    <insert id="InsertRequest" parameterType="hashmap"> 
-        INSERT INTO npo.toilapi VALUES (#{ReqMCode}, #{ReqDCode},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF},NOW(),"SYSTEM")
+     
+     <select id="QuoCompList" resultType="hashmap">
+          SELECT   A.ENTER_CD
+			      ,A.COMP_CD
+			      ,B.COMP_NM 
+				  ,B.MAIN_ITEM 
+				  ,B.SUB_ITEM
+				  ,0 AS DEALCNT 	 				
+               FROM npo.TQUO101 A, TCOMP101 B
+               WHERE A.ENTER_CD = B.ENTER_CD 
+                AND A.QUO_COMP_CD = B.COMP_CD
+               AND A.ENTER_CD = 'BACH'
+    </select>
+    
+   
+    <insert id="saveQuo" parameterType="hashmap">  
+      INSERT INTO npo.TREQ100 (ENTER_CD ,REQ_NO,MAIN_CATEGORY,SUB_CATEGORY,REQ_SDATE,REQ_EDATE,CHKDATE,CHKID) VALUES 
+        (#{ENTER_CD},#{REQ_NO},#{MAIN_CATEGORY},#{SUB_CATEGORY},#{REQ_SDATE},#{REQ_EDATE},now(),"MASTER");
+    
+    
+       INSERT INTO npo.TREQ101 (ENTER_CD ,REQ_NO,ITEM_CD,ITEM_NM,QTY,CHKDATE,CHKID) VALUES
+       <foreach collection="i_arrStr" item="item" separator = ",">       
+	      (#{item.ENTER_CD},#{item.REQ_NO}, #{item.ITEM_CD},#{item.ITEM_NM},#{QTY},now(),"MASTER")
+       </foreach> 
+     
    </insert>  
   
-    <update id="UpdateRequest" parameterType="hashmap"> 
+    <update id="UpdateQuotation" parameterType="hashmap"> 
         UPDATE npo.toilapi 
         SET #{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
    </update>
      
-     <delete id="DeleteRequest" parameterType="hashmap"> 
+     <delete id="DeleteQuotation" parameterType="hashmap"> 
         INSERT INTO npo.toilapi VALUES (#{OILIDX}, #{YMD},#{OILCODE}, #{OILNAME}, #{PRICE}, #{DIFF})
    </delete>
    
-   <insert id="saveReqCompany" parameterType="hashmap"> 
-      INSERT INTO 
-      SELECT CC_CD, CC_NM FROM npo.TCOMP101
-      WHERE CC_CD =  #{CC_CD}
-      
-      
-   </insert>  
+
 
  
 </mapper>

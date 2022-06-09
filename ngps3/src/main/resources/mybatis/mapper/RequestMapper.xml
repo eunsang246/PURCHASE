@@ -10,11 +10,10 @@
 			     ,REQ_NO
 				 ,REQ_SDATE
 				 ,REQ_EDATE
-				 ,REQ_TEXT
 				 ,BIGO
 				 ,CHKDATE
 				 ,CHKID
-               FROM npo.treq100
+               FROM npo.TREQ100
                 WHERE ENTER_CD =#{ssnEnterCd}
                <!--  WHERE REQ_SDATE =#{YMD}-->
     </select>
@@ -27,10 +26,10 @@
     <select id="getReqInfo" resultType="hashmap">
         SELECT   ENTER_CD
 			     ,REQ_NO 
-				 ,REQ_SDATE 
-				 ,REQ_EDATE
-				 ,REQ_TEXT
-				 ,BIGO				  	 				
+				 ,TO_CHAR(REQ_SDATE,'YYYY-MM-DD') AS REQ_SDATE 
+				 ,TO_CHAR(REQ_EDATE,'YYYY-MM-DD') AS REQ_EDATE 
+				 ,BIGO		
+				 ,CHKID		  	 				
                FROM npo.TREQ100
                WHERE REQ_NO = #{REQ_NO}
     </select>
@@ -48,37 +47,35 @@
  			 	  BIGO 				
                FROM npo.TCODE100
                WHERE ENTER_CD =#{ssnEnterCd}
+               
     </select>
     
-       <select id="getReqItemList" resultType="hashmap">
-        SELECT    ENTER_CD,
-                  REQ_NO,
-                  ITEM_CD ,
-  		 	      ITEM_NM,  
-  			      BIGO 				
-               FROM npo.TREQ101
-               WHERE ENTER_CD =#{ssnEnterCd}
-               AND REQ_NO = #{REQ_NO}
+   <select id="getReqItemList" resultType="hashmap">
+        SELECT  ROWNUM() AS NO 
+               ,A.REQ_NO
+               ,A.ITEM_CD
+               ,A.ITEM_NM
+               ,A.UNIT
+               ,A.QTY
+    		   ,B.MAIN_CATEGORY 
+               ,B.SUB_CATEGORY
+               ,B.BIGO
+         FROM npo.TREQ101 A, npo.TCODE100 B 
+         WHERE A.ENTER_CD =  B.ENTER_CD
+           AND A.ITEM_CD =  B.ITEM_CD
+           AND A.REQ_NO = #{REQ_NO}
     </select>
     
-     <select id="QuoComList" resultType="hashmap">
-          SELECT   ENTER_CD
-			      ,CC_NM 
-				  ,MAIN_ITEM 
-				  ,SUB_ITEM
-				  ,0 AS DEALCNT 	 				
-               FROM npo.TCOMP101
-    </select>
     
    
     <insert id="saveReq" parameterType="hashmap">  
-      INSERT INTO npo.TREQ101 (ENTER_CD ,REQ_NO,ITEM_CD,ITEM_NM,BIGO,CHKDATE,CHKID) VALUES 
-        ("1","2","3","4","5",now(),"6");
+      INSERT INTO npo.TREQ100 (ENTER_CD ,REQ_NO,MAIN_CATEGORY,SUB_CATEGORY,REQ_SDATE,REQ_EDATE,CHKDATE,CHKID) VALUES 
+        (#{ENTER_CD},#{REQ_NO},#{MAIN_CATEGORY},#{SUB_CATEGORY},#{REQ_SDATE},#{REQ_EDATE},now(),"MASTER");
     
     
-       INSERT INTO npo.TREQ101 (ENTER_CD ,REQ_NO,ITEM_CD,ITEM_NM,BIGO,CHKDATE,CHKID) VALUES
+       INSERT INTO npo.TREQ101 (ENTER_CD ,REQ_NO,ITEM_CD,ITEM_NM,QTY,CHKDATE,CHKID) VALUES
        <foreach collection="i_arrStr" item="item" separator = ",">       
-	      (#{item.ENTER_CD},#{item.REQ_NO}, #{item.ITEM_CD},#{item.ITEM_NM},"REQ ITEM",now(),"MASTER")
+	      (#{item.ENTER_CD},#{item.REQ_NO}, #{item.ITEM_CD},#{item.ITEM_NM},#{QTY},now(),"MASTER")
        </foreach> 
      
    </insert>  

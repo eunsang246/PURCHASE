@@ -13,7 +13,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title></title>
+   
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -27,7 +27,7 @@
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     
-        <!-- Bootstrap core JavaScript-->
+      <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -45,15 +45,51 @@
     <script src="js/demo/datatables-demo.js"></script>
     
     
+    
+    
 <script type="text/javascript">
- function doAction1(sAction) {
-        switch (sAction) {
-	        case "Search":
-	            alert("call!!!!");
-	            break;	            
-	 }  
-}
-
+  $(document).ready(function(){
+	  
+	   var table = $('#dataTable').DataTable();
+		
+	   $('#btnNewReq').click( function () {
+		  form1.reset();
+	      window.open('/cmd=viewCompInsert','pop',"toolbar=no,width=700,height=800, scrollorbars=no, resizable=no");    
+	   }); 	
+	 
+	   $('#btnSearch').click( function () {
+			
+		   var parameter = $("form[name=form1]").serialize();
+		   
+		   $.ajax({
+	 	        url: "/cmd=viewCompList",  	
+			    type: "POST",dataType:"json",
+		        data:  parameter,
+		        success: function(text){},
+		        error: function (jqXHR, textStatus, errorThrown) {}                     
+	      });
+	   }); 	
+		 
+	   
+	  
+	   $('#dataTable tbody').on( 'click', 'td', function () {
+	       
+	       var idx = table.cell( this ).index().column; //선택한 Cell의 Index 확인  
+	       var title = table.column( idx ).header(); //Table 에서 해당 Index의 Header 정보        
+	      
+	       if($(title).html().indexOf('협력사명')!= -1) // Header 정보에 요청번호가 포함이 안되어 있으면 -1 리턴 
+	       {
+	    	  document.getElementById("REQ_NO").value = table.cell( this ).data();  //해당 Cell Data 변수 맵핑 
+	    
+	    	  window.open('','popCompInsert','toolbar=no,width=700,height=800, scrollorbars=no, resizable=no'); 	
+	    	  form1.action = "/cmd=viewReqInsert"; 
+	    	  form1.target = 'popReqInsert';
+	    	  form1.submit();	 
+	       	 
+	    	  document.getElementById("REQ_NO").value ="";
+	       }	 
+	   }); 
+	});
 </script>
 
 
@@ -79,43 +115,42 @@
                         <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Admin User</h6>
-                        </div>
-                         
+                            <h6 class="m-0 font-weight-bold text-primary">Partner Company List</h6>
+                        </div>                         
+                        <div align="right" style="padding:12px"> 
+                          <button id="btnSearch" class="btn btn-primary"  style ="font-size:12px">조회</button>
+                          <button id="btnNewReq" class="btn btn-primary"  style ="font-size:12px">입력</button>
+                        </div>    
                         <div class="card-body">                        
                             <div class="table-responsive">                                    
                                <th:block layout:fragment="alert-content">
     					          <p align="right">
-    					            <button type="button" class="btn btn-primary">Primary button</button>
-            					    <button type="button" class="btn btn-danger" >Danger button</button>
-                					<button type="button" class="btn btn-default">Default -button</button> 
-                					<button type="button" class="btn btn-secondary" >btn-secondary</button>
-                					<button type="button" class="btn btn-info" >btn-secondary</button>
-                					<button type="button" class="btn btn-outline-info" >btn-secondary</button>
-                					<button type="button" class="btn btn-primary" onClick =location.href="/cmd=callapi_oil">OilPriceAPI</button>
-                					<button type="button" class="btn btn-primary" onClick =location.href="javascript:doAction1('Search')">조회</button>
-           					      </p>
         						</th:block>                              
         
-        					 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        					  <table class="table table-bordered" id="dataTable"   data-click-to-select="true"
+                                   data-toolbar="#toolbar" data-toggle="table" width="100%" cellspacing="0">
                                  <thead>
-									<tr class="text-center">
-									<th>회사코드</th>
-									<th>계정</th>
-									<th>잠김여부</th>
-									<th>비밀번호변경일</th>
-									<th>로그인실패횟수</th>
-									<th>최종수정일</th>
+									<tr class="text-center" style="font-size:12px;">
+									<th>협력사코드</th>
+									<th>협력사명</th>
+									<th>사업자번호</th>
+									<th>대표명</th>
+									<th>전화번호</th>
+									<th>주소</th>
+									<th>MainItem</th>
+									<th>SubItem</th>
 									</tr>
 								</thead>
-								<tbody class="text-center">
-									<tr th:each="row:${Alllist}">
-										<td th:text="${row.ENTER_CD}"></td>
-										<td><a href="/cmd=viewRequestList" th:text="${row.ID}">Title ...</a></td>
-										<td th:text="${row.ROCKING_YN}"></td>
-										<td th:text="${row.PSWD_CHG_YMD}"></td>
-										<td th:text="${row.LOGIN_FAIL_CNT}"></td>
-										<td th:text="${row.CHKDATE}"></td>
+								<tbody class="text-center" style="font-size:12px;" >
+									<tr th:each="row:${CompList}">
+										<td th:text="${row.CC_CD}"></td>
+										<td th:text="${row.CC_NM}"></td>
+										<td th:text="${row.BIZ_NO}"></td>
+										<td th:text="${row.CEO_NM}"></td>
+										<td th:text="${row.TEL_NO}"></td>
+										<td th:text="${row.ADDRESS}"></td>
+										<td th:text="${row.MAIN_ITEM}"></td>
+										<td th:text="${row.SUB_ITEM}"></td>
 									</tr>
 								</tbody>
                                 </table>
@@ -161,7 +196,7 @@
         </div>
     </div>
 
-
+  
 </body>
 
 </html>

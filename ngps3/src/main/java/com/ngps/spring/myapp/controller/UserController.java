@@ -25,9 +25,8 @@ public class UserController {
 	public ModelAndView HomeView(Map<String, Object> map) throws Exception{
 		ModelAndView mav = new ModelAndView();
 		
-		List<Map<String, Object>> AllList = userService.SelectAllList();
-   
-		System.out.println("Execute Result ↓↓↓↓↓");
+		List<Map<String, Object>> AllList = userService.SelectAllList();   
+		
 		System.out.println(AllList);			
 		
 		mav.addObject("Alllist", AllList);

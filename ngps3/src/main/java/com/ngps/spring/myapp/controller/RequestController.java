@@ -27,6 +27,9 @@ public class RequestController<paramMap> {
 	@Resource
 	private RequestService requestService;
 	
+	/*
+	 Request List 화면 출력  
+	*/	
 	@RequestMapping(value="cmd=viewRequestList") 
 	public ModelAndView RequestListView(HttpSession session,
 		   HttpServletRequest req, HttpServletResponse res, 
@@ -46,7 +49,9 @@ public class RequestController<paramMap> {
 		return mav;
 	}
 
-	
+	/*
+	 Request 입력 팝업 화면 출력 
+	*/	
 	@RequestMapping(value="cmd=viewReqInsert") 
 	public ModelAndView RequestInsertView(HttpSession session,
 		    HttpServletRequest req, HttpServletResponse res, 
@@ -60,25 +65,28 @@ public class RequestController<paramMap> {
 		if((String)paramMap.get("REQ_NO")!= null) { 
 	         System.out.println(paramMap);
   	         try{
-	    	  ReqInfo = requestService.getReqInfo(paramMap);   //REQ_NO로 기존 신청정보 가져오기. 
-	    	  List<Map<String, Object>> ReqItemList = requestService.getReqItemList(paramMap); //REQ_NO 가져오기 
-	    	  mav.addObject("ReqItemList", ReqItemList);
-	    	  mav.addObject("ReqInfo", ReqInfo);
+	    	     ReqInfo = requestService.getReqInfo(paramMap);   //REQ_NO로 기존 신청정보 가져오기. 
+	    	     List<Map<String, Object>> ReqItemList = requestService.getReqItemList(paramMap); //ItemList 가져오기 
+	    	     mav.addObject("ReqItemList", ReqItemList);
+	    	     mav.addObject("ReqInfo", ReqInfo);
 	     	   }catch(Exception e){
-	 	    	  System.out.println(e);
+	 	    	 System.out.println(e);
 		       };
 		 }else {
-			 Message ="NEW";			
-			 ReqInfo = requestService.getNewReqNo(paramMap);   //새로운 Requisition No 생성 
-			 mav.addObject("ReqInfo", ReqInfo);
-			 System.out.println("New Req Insert");			
-		}
+			     Message ="NEW";			
+			     ReqInfo = requestService.getNewReqNo(paramMap);   //새로운 Requisition No 생성 
+			     mav.addObject("ReqInfo", ReqInfo);
+			     System.out.println("New Req Insert");			
+		 }
 		
 		mav.addObject("Message", Message);	
 	    mav.setViewName("myapp/request/requestInsert");        
 		return mav;
 	}
 
+	/*
+	  Category ComboBox 출력 
+	*/	
 	@RequestMapping(value="cmd=SubSelect")
 	public void ReqCodeSelect(HttpServletRequest req, HttpServletResponse res,  String param){
           try {			                   
@@ -102,7 +110,9 @@ public class RequestController<paramMap> {
 		}
 	
 	
-
+	/*
+	 Item 선택을 위한 팝업창 출력  
+	*/	
 	@RequestMapping(value="cmd=popSelectItem") 
 	public ModelAndView popSelectItem( HttpSession session ,
 			 HttpServletRequest req, HttpServletResponse res, 
@@ -118,13 +128,15 @@ public class RequestController<paramMap> {
 		return mav;
 	}
 	
-	
+	/*
+	 Request Save
+	*/	
 	@RequestMapping(value="cmd=saveReq")
 	public void saveReqItem(HttpSession session, 
 			 HttpServletRequest req, HttpServletResponse res, 
 			 @RequestParam Map<String, Object> paramMap) { 
            try {			   
- 		     	System.out.println("********************************************111111");		
+ 		     	System.out.println("-- Save Request Start --");		
 			    System.out.println(paramMap);	  			    
 			    		    
 			    String paramStr = paramMap.get("jsonData").toString();
@@ -133,19 +145,34 @@ public class RequestController<paramMap> {
 			    
 			    List<Map<String, Object>> resendList = new ArrayList<Map<String, Object>>();
 			    for(int i=0; i<arr.size(); i++){
-			           
+			    	
 			        JSONObject obj = (JSONObject)arr.get(i);
-			        Map<String, Object> resendMap = new HashMap<String, Object>();
+			    	Map<String, Object> resendMap = new HashMap<String, Object>();
 			        resendMap.put("ENTER_CD", obj.get("ENTER_CD"));
 			        resendMap.put("REQ_NO", obj.get("REQ_NO"));	
 			        resendMap.put("ITEM_CD", obj.get("ITEM_CD"));
-			        resendMap.put("ITEM_NM", obj.get("ITEM_NM"));			        		            
+			        resendMap.put("ITEM_NM", obj.get("ITEM_NM"));		
+			        resendMap.put("UNIT", obj.get("UNIT"));
+			        resendMap.put("QTY", obj.get("QTY"));		
 			        resendList.add(resendMap);
-			  }
+			    	
+			        if(i==0) {
+			    		//첫번째 배열에서 Master 성 데이터를 추출한
+			    		paramMap.put("ENTER_CD", obj.get("ENTER_CD"));
+			    		paramMap.put("REQ_NO", obj.get("REQ_NO"));
+			    		paramMap.put("MAIN_CATEGORY", obj.get("MAIN_CATEGORY"));
+			    		paramMap.put("SUB_CATEGORY", obj.get("SUB_CATEGORY"));
+			    		paramMap.put("REQ_SDATE", obj.get("REQ_SDATE"));
+			    		paramMap.put("REQ_EDATE", obj.get("REQ_EDATE"));
+			    		paramMap.put("BIGO", obj.get("BIGO"));	    		
+			    		
+			    	}		
+			    }
 			    paramMap.put("i_arrStr", resendList);
+			   
 	          	requestService.saveReq(paramMap);
 			    
-			    System.out.println("********************************************222222");
+			    System.out.println("-- Save Request End --");
 		   } catch (Exception e) {
 		        System.out.println(e);
 		   }

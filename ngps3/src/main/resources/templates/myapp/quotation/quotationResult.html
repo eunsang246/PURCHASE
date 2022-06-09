@@ -68,20 +68,20 @@
   });
   
  
-  function setCompList(CompArray){
-	   
+  function setcompList(compArray){
+	  
 	$("#noList").remove(); //항목을 선택해달라는 Object 삭제 
  
-    for(var i=0; i<CompArray.length; i++){
+    for(var i=0; i<ItemArray.length; i++){
             
         $("#compTb tbody").append($("#compTr").html());
         var lastTr = $("#compTb tbody tr:last");          
           $(lastTr).find("td[name='No']").append(i+1);
-          $(lastTr).find("td[name='comp_cd']").append(CompArray[i].COMP_CD);
-          $(lastTr).find("td[name='comp_nm']").append(CompArray[i].COMP_NM);
-          $(lastTr).find("td[name='main_item']").append(CompArray[i].MAIN_ITEM);
-          $(lastTr).find("td[name='sub_item']").append(CompArray[i].SUB_ITEM);
-          $(lastTr).find("td[name='deal_cnt']").append(CompArray[i].DEAL_CNT);
+          $(lastTr).find("td[name='cc_cd']").append(ItemArray[i].CC_CD);
+          $(lastTr).find("td[name='cc_nm']").append(ItemArray[i].CC_NM);
+          $(lastTr).find("td[name='main_item']").append(ItemArray[i].MAIN_ITEM);
+          $(lastTr).find("td[name='sub_item']").append(ItemArray[i].SUB_ITEM);
+          $(lastTr).find("td[name='deal_cnt']").append(ItemArray[i].DEAL_CNT);
     }
    }  
    
@@ -90,14 +90,14 @@
 	    $tr.remove(); 
 	}
   
-  function popCompList(){
+  function popcompList(){
 	 	  
-	 window.open('','popSelectComp','toolbar=no,width=800,height=600,left=100,top=100, scrollorbars=no, resizable=no'); 	
- 	 form1.action = "/cmd=popSelectComp";
- 	 form1.target = "popSelectComp"
- 	 form1.submit();	  
+	 window.open('','popSelectCompany]','toolbar=no,width=800,height=600,left=100,top=100, scrollorbars=no, resizable=no'); 	
+ 	 form1.action = "/cmd=popSelectCompany";
+ 	 form1.target = "popSelectCompany"
+ 	 form1.submit();
+	  
   }
-  
  function saveQuo(){
 	   
 	
@@ -179,10 +179,10 @@
 				<input id="QUO_NO" name ="QUO_NO" type="text"  style="font-size:13px" class="form-control" 
 				  th:value="${QuoInfo.QUO_NO}" readonly />
 			  </td>		
-			  <td style="text-align:center;font-weight: bold;vertical-align : middle;font-size:13px;background-color:#F5F9FA;">생성일자</td>
+			  <td style="text-align:center;font-weight: bold;vertical-align : middle;font-size:13px;background-color:#F5F9FA;">생성자</td>
 			  <td>	
 				<input id="QuoMade" name ="QuoMade" type="text"  style="font-size:13px" class="form-control"
-				th:value="${Message =='NEW'} ? ' '  : ${QuoInfo.CHKDATE} " readonly />
+				th:value="${Message =='NEW'} ? ' '  : ${QuoInfo.CHKID} " readonly />
 			  </td>
    		     </tr> 
    		     <tr>
@@ -191,10 +191,10 @@
 				<input id="REQ_NO" name ="REQ_NO" type="text"  style="font-size:13px" class="form-control" 
 				  th:value="${QuoInfo.REQ_NO} " readonly />
 			  </td>		
-			  <td style="text-align:center;font-weight: bold;vertical-align : middle;font-size:13px;background-color:#F5F9FA;">요청일자</td>
+			  <td style="text-align:center;font-weight: bold;vertical-align : middle;font-size:13px;background-color:#F5F9FA;">생성자</td>
 			  <td>	
 				<input id="ReqMade" name ="ReqMade" type="text"  style="font-size:13px" class="form-control"
-				th:value="${QuoInfo.REQ_CHKDATE} " readonly />
+				th:value="${QuoInfo.REQ_CHKID} " readonly />
 			  </td>
    		     </tr>          
            	   		            
@@ -224,34 +224,32 @@
               </td> 
              </tr>
             </table>                                    
-            <table class="table table-bordered" id="reqItemList"   data-click-to-select="true"
-                    data-toolbar="#toolbar" data-toggle="table"  width="100%" cellspacing="0">
-                <thead>
-				  <tr class="text-center" style="font-size:12px">									
-					 <th>No</th>
-					 <th>요청번호</th>							
-				 	 <th>Item 코드</th>
-					 <th>Item 명칭</th>	
-					 <th>대분류</th>
-					 <th>중분류</th>	
-					 <th>단위</th>					 		
-					 <th>비고</th>
-					 <th>수량</th>	
-				  </tr>
-				 </thead>
-				 <tbody class="text-center" style="font-size:12px">
-				  <tr th:each="row:${ReqItemList}" >									    
-					 <td th:text="${row.NO}"></td>
-					 <td th:text="${row.REQ_NO}"></td>
-                	 <td th:text="${row.ITEM_CD}"></td>	
-		     	     <td th:text="${row.ITEM_NM}"></td>																		 
-				 	 <td th:text="${row.MAIN_CATEGORY}"></td>
-					 <td th:text="${row.SUB_CATEGORY}"></td>
-					 <td th:text="${row.UNIT}"></td>
-				 	 <td th:text="${row.BIGO}"></td>
-					 <td th:text="${row.QTY}"></td>       
-				   </tr>
-				  </tbody>
+                      <table class="table table-bordered" id="reqItemList"   data-click-to-select="true"
+                           data-toolbar="#toolbar" data-toggle="table"  width="100%" cellspacing="0">
+                         <thead>
+							<tr class="text-center" style="font-size:12px">									
+						  	 <th>No</th>						
+						 	 <th>Item 코드</th>
+							 <th>Item 명칭</th>	
+					 		 <th>대분류</th>
+					 		 <th>중분류</th>	
+					 		 <th>단위</th>					 		
+					 		 <th>비고</th>
+					 		 <th>수량</th>	
+					 		</tr>
+						 </thead>
+						 <tbody class="text-center" style="font-size:12px">
+						 	<tr th:each="row:${ReqItemList}" >									    
+							 <td name="No"></td>
+                   			 <td name="item_cd"></td>
+                  			 <td name="item_nm"></td>
+                  			 <td name="main_category"></td>
+                   			 <td name="sub_category"></td>   
+                  			 <td name="unit"></td>       
+                  			 <td name="bigo"></td>                      
+                 		 	 <td name="qty"></td>                  
+					</tr>
+				 </tbody>
               </table>                            
              <table>
    		     <col width="80%" />
@@ -263,9 +261,7 @@
               </td>  
               <td></td>
                <td>    
-               <div align="right" style="padding:15px">    
                   <a href="javascript:popCompList()" class="btn btn-outline-info" style ="font-size:13px">Select Company</a>      
-               </div>
                </td>   
               </tr>
             </table>
@@ -289,11 +285,12 @@
 				<tbody id ="compTr">
 				  <tr class="text-center"  style="font-size:12px">
 				   <td name="No"></td>
-                   <td name="comp_cd"></td>
-                   <td name="comp_nm"></td>
-                   <td name="main_item"></td>
-                   <td name="sub_item"></td>   
-                   <td name="deal_cnt"></td>                     
+                   <td name="item_cd"></td>
+                   <td name="item_nm"></td>
+                   <td name="main_category"></td>
+                   <td name="sub_category"></td>   
+                   <td name="unit"></td>       
+                   <td name="bigo"></td>                      
                    <td name="delete"> <a href="javascript:void(0);" onclick="trRemove(this);return false;" class="btn btn-warning btn-sm"><spring:message code="btn.cancel" text="취소" /></a> </td>
                  </tr>
 				</tbody>			
@@ -302,11 +299,13 @@
 				<tbody id ="compList">
 				  <tr th:each="row:${QuoCompList}"  style="font-size:12px">									    
 					<td th:text="${row.NO}"></td>
-				    <td th:text="${row.COMP_CD}"></td>	
-				    <td th:text="${row.COMP_NM}"></td>																		 
-					<td th:text="${row.MAIN_ITEM}"></td>
-					<td th:text="${row.SUB_ITEM}"></td>
-					<td th:text="${row.DEAL_CNT}"></td>
+				    <td th:text="${row.ITEM_CD}"></td>	
+				    <td th:text="${row.ITEM_NM}"></td>																		 
+					<td th:text="${row.MAIN_CATEGORY}"></td>
+					<td th:text="${row.SUB_CATEGORY}"></td>
+					<td th:text="${row.UNIT}"></td>
+					<td th:text="${row.BIGO}"></td>
+					<td th:text="${row.QTY}"></td>
 				  </tr>
 				</tbody>			
              </table>                    		       

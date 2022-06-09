@@ -3,10 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout/default">
 <th:block layout:fragment="content">
+<script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+
 
 <head>
-
-
+<title>Quotation List</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,100 +28,7 @@
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     
     
-<script type="text/javascript">
- function doAction(sAction) {
-        switch (sAction) {
-	      case "popReqDetail":
- 		     	var url = "/cmd=viewReqInsert";
-  			    window.open('',"Request Insert","toolbar=no,width=700,height=700, scrollorbars=no, resizable=no");  		
-				$("form[name=form1]").attr("action", url);
-				$("form[name=form1]").attr("target", "Request Insert");
-				$("form[name=form1]").attr("method", "post");	
-				$("form[name=form1]").submit();
-				
- 			break; 
- 	   }
-}
-</script>
-
-
-	
-
-</head>
-
-<body id="page-top">
-   
-    <!-- Page Wrapper -->
-    <div id="wrapper">
-
-
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-            <form name="form1" id="form1" method="post">
-             <input type="hidden" id="ssnEnterCd"  name="ssnEnterCd" value="BACH"/>
-    		 <input type="hidden" id="ssnUserId"   name="ssnUserId" value="MASTER"/>
-   			 <input type="hidden" id="ssnAuth"     name="ssnAuth" value="ALL"/>   
-            
-            <!-- Main Content -->
-            <div id="content">
-
-              <!-- Begin Page Content -->
-                <div class="container-fluid">
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800"></h1>
-                    
-                    
-                    <!-- DataTales Start -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Quotation List</h6>
-                        </div>      
-    
-                        <div class="card-body">                        
-                            <div class="table-responsive">    
-                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                 <thead>
-									<tr class="text-center" style="font-size:12px">
-									<th>회사코드</th>
-									<th>요청번호</th>
-									<th>요청시작일</th>
-									<th>요청종료일</th>
-									<th>내용</th>
-									<th>비고</th>
-									<th>입력시간</th>
-									</tr>
-								</thead>
-								<tbody class="text-center" style="font-size:12px">
-									<tr th:each="row:${SelectRequest}">
-										<td th:text="${row.CC_CD}"></td>
-										<td>
-										 <a th:text="${row.REQ_NO}" href="javascript:doAction('popReqDetail')"></a>
-										</td>										 
-										  <input type="hidden" id="REQ_NO" name="REQ_NO" th:value="${row.REQ_NO}">										 
-										<td th:text="${row.REQ_SDATE}"></td>
-										<td th:text="${row.REQ_EDATE}"></td>
-										<td th:text="${row.REQ_TEXT}"></td>
-										<td th:text="${row.BIGO}"></td>
-									    <td th:text="${row.CHKDATE}"></td>
-									</tr>
-								</tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.container-fluid -->
-            </div>
-            <!-- End of Main Content -->
-		</form>
-         
-        </div>
-        <!-- End of Content Wrapper -->
-     
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
+     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>   
@@ -128,7 +36,7 @@
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-6
+
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
@@ -141,6 +49,133 @@
 
     <!-- Page level custom scripts -->
     <script src="js/demo/datatables-demo.js"></script>
+
+    
+    
+<script type="text/javascript"> 
+ $(document).ready(function(){
+	  
+   var table = $('#dataTable').DataTable();
+
+  
+   $('#dataTable tbody').on( 'click', 'td', function () {
+       
+       var idx = table.cell( this ).index().column; //선택한 Cell의 Index 확인  
+       var title = table.column( idx ).header(); //Table 에서 해당 Index의 Header 정보         
+        
+       if($(title).html().indexOf('요청번호')!= -1) // Header 정보에 요청번호가 포함이 안되어 있으면 -1 리턴 
+       {
+    	  document.getElementById("REQ_NO").value = table.cell( this ).data();  //해당 Cell Data 변수 맵핑 
+    
+    	  window.open('','popReqInsert','toolbar=no,width=700,height=800, scrollorbars=no, resizable=no'); 	
+    	  form1.action = "/cmd=viewReqInsert"; 
+    	  form1.target = 'popReqInsert';
+    	  form1.submit();	 
+       	 
+    	  document.getElementById("REQ_NO").value ="";
+    	  
+       }else if($(title).html().indexOf('견적번호')!= -1){
+
+    	  document.getElementById("REQ_NO").value = table.row( this ).data()[2];  //해당 Row REQ_NO 추출 
+    	  document.getElementById("QUO_NO").value = table.cell( this ).data();  //해당 Cell Data 변수 맵핑 
+    	  
+    	  if(document.getElementById("QUO_NO").value == "Quotation Proceed"){ //업체별 견적번호 발급전     		  
+     	    window.open('','popQuoInsert','toolbar=no,width=1000,height=800, scrollorbars=no, resizable=no'); 	
+     	    form1.action = "/cmd=viewQuoInsert"; 
+     	    form1.target = 'popQuoInsert';
+     	    form1.submit();	   
+    	  }else{//업체별 견적번호 발급 후     		  
+    		window.open('','popQuoResult','toolbar=no,width=1000,height=800, scrollorbars=no, resizable=no'); 	
+       	    form1.action = "/cmd=viewQuoResult"; 
+       	    form1.target = 'popQuoResult';
+       	    form1.submit();	        	       		  
+    	  }
+    	  
+    	  document.getElementById("REQ_NO").value ="";   
+   	      document.getElementById("QUO_NO").value ="";   
+       }	 
+   }); 
+});
+ 
+</script>
+
+
+
+</head>
+
+<body id="page-top">
+   
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+          <form name="form1" id="form1" method="post">
+            <input type="hidden" id="ssnEnterCd"  name="ssnEnterCd" value="BACH"/>
+    		<input type="hidden" id="ssnUserId"   name="ssnUserId" value="MASTER"/>
+   			<input type="hidden" id="ssnAuth"     name="ssnAuth" value="ALL"/>   
+   			<input type="hidden" id="REQ_NO" name="REQ_NO" value="">	
+   			<input type="hidden" id="QUO_NO" name="QUO_NO" value="">	
+            <!-- Main Content -->
+            <div id="content">
+
+              <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800"></h1>                   
+                    
+                    <!-- DataTales Start -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Quotation List</h6>
+                        </div>      
+                         <div class="card-body">                        
+                            <div class="table-responsive">    
+                               <table class="table table-bordered" id="dataTable"   data-click-to-select="true"
+                                  data-toolbar="#toolbar" data-toggle="table"  width="100%" cellspacing="0">
+                                 <thead>
+									<tr class="text-center" style="font-size:12px">									
+									<th>회사코드</th>
+									<th>견적번호</th>
+									<th>요청번호</th>
+									<th>요청시작일</th>
+									<th>요청종료일</th>
+									<th>비고</th>
+									<th>입력시간</th>
+									</tr>
+								</thead>
+								<tbody class="text-center" style="font-size:12px">
+									<tr th:each="row:${SelectQuotation}" >									    
+										<td th:text="${row.ENTER_CD}"></td>
+										<td th:text="${row.QUO_NO}" style ="color:blue;"></td>		
+				                  		<td th:text="${row.REQ_NO}" style ="color:blue;"></td>																		 
+										<td th:text="${row.REQ_SDATE}"></td>
+										<td th:text="${row.REQ_EDATE}"></td>
+										<td th:text="${row.BIGO}"></td>										 
+									    <td th:text="${row.CHKDATE}"></td>
+									</tr>
+								</tbody>
+                              </table>    
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+		</form>
+         
+        </div>
+        <!-- End of Content Wrapper -->
+     
+    </div>
+    <!-- End of Page Wrapper -->
+
+
 
 </body>
 
