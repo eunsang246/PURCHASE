@@ -1,5 +1,5 @@
 # PURCHASE
-오픈소스기반 구매시스템 구축 프로젝트
+오픈소스기반 구매플랫폼 구축 프로젝트
 
 - 시스템 기반 : SpringBoot/Thymeleaf/bootstrap/dataTables/MariaDB/Mybatis
 - 기본프로세스 : 요청 -> 견적 -> 구매 -> 재고관리 , 협력사 관리 등 구매업무.
